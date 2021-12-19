@@ -75,6 +75,7 @@ public class Hangman {
             return;
         } else {
             System.out.println("You lose!");
+            System.out.println("The word was: " + word);
             return;
         }
     }
