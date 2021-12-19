@@ -9,21 +9,38 @@ import java.util.Scanner;
 public class Hangman {
     public static void main(String[] args) throws FileNotFoundException {
 
-        //Similar to fs in javascript. Parse through a file.
-        Scanner scanner = new Scanner(new File("/Users/zhangyiwan/Downloads/words_alpha.txt"));
-        //Get user input
+        //Find number of players
         Scanner keyboard = new Scanner(System.in);
+        System.out.println("1 or 2 players?");
+        String players = keyboard.nextLine();
 
-        // Create words array and use Scanner to parse through the giant word file.
-        List<String> words = new ArrayList<>();
-        while(scanner.hasNext()){
-            words.add(scanner.nextLine());
+
+        // We need to decide on the word for the hangman game.
+        // If you only have 1 player, we will randomly generate a word for you.
+        String word;
+        if (players.equals("1")){
+            //Similar to fs in javascript. Parse through a file.
+            Scanner scanner = new Scanner(new File("/Users/zhangyiwan/Downloads/words_alpha.txt"));
+
+            // Create words array and use Scanner to parse through the giant word file.
+            List<String> words = new ArrayList<>();
+            while(scanner.hasNext()){
+                words.add(scanner.nextLine());
+            }
+
+            // Create random word from words array
+            Random rand = new Random();
+            word = words.get(rand.nextInt(words.size()));
+        } else {
+            System.out.println("Player 1, please enter your word: ");
+            word = keyboard.nextLine();
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("Ready for player 2. Good luck!");
         }
 
-        // Create random word from words array
-        Random rand = new Random();
-        String word = words.get(rand.nextInt(words.size()));
-        System.out.println(word);
+
+
 
 
         List<Character> playerGuesses = new ArrayList<>();
@@ -31,52 +48,66 @@ public class Hangman {
         int wrongCount = 0;
         while(true){
 
-            System.out.println(" -------");
-            System.out.println(" |     |");
+            printHangedMan(wrongCount);
 
-            if (wrongCount >= 1) {
-                System.out.println(" O");
+            if(wrongCount >= 6){
+                finalMethod(keyboard, word);
+                break;
             }
-            if (wrongCount >= 2) {
-                System.out.print("\\ ");
-                if (wrongCount >= 3) {
-                    System.out.print("/");
-                } else {
-                    System.out.println("");
-                }
-            }
-            if (wrongCount >= 4) {
-                System.out.println(" |");
-            }
-
-            if (wrongCount >= 5) {
-                System.out.print("/ ");
-                if (wrongCount >= 6) {
-                    System.out.print("\\");
-                } else {
-                    System.out.println("");
-                }
-            }
-
             printWordState(word, playerGuesses);
             if (!getPlayerGuess(keyboard, word, playerGuesses)){
                 wrongCount++;
             }
+
             if (printWordState(word, playerGuesses)){
                 System.out.println("You won the game!!!");
                 break;
             }
 
-            System.out.println("Please enter your guess for the word:");
-            if(keyboard.nextLine().equals(word)){
-                System.out.println("You won the game!!!");
-                break;
-            } else {
-                System.out.println("Nope! Try again!");
-            }
+
         }
     }
 
+    private static void finalMethod(Scanner keyboard, String word) {
+        System.out.println("Please enter your guess for the word:");
+        if(keyboard.nextLine().equals(word)){
+            System.out.println("You won the game!!!");
+            return;
+        } else {
+            System.out.println("You lose!");
+            return;
+        }
+    }
+
+    private static void printHangedMan(int wrongCount) {
+        System.out.println(" -------");
+        System.out.println(" |     |");
+
+        if (wrongCount >= 1) {
+            System.out.println(" O");
+        }
+        if (wrongCount >= 2) {
+            System.out.print("\\ ");
+            if (wrongCount >= 3) {
+                System.out.print("/");
+                System.out.println("");
+            } else {
+                System.out.println("");
+            }
+        }
+        if (wrongCount >= 4) {
+            System.out.println(" |");
+        }
+
+        if (wrongCount >= 5) {
+            System.out.print("/ ");
+            if (wrongCount >= 6) {
+                System.out.println("\\");
+            } else {
+                System.out.println("");
+            }
+        }
+    }
 
 
     private static boolean getPlayerGuess(Scanner keyboard, String word, List<Character> playerGuesses) {
